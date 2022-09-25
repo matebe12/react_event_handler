@@ -1,15 +1,14 @@
-.mydiv {
-    position: absolute;
-    z-index: 9;
-    background-color: #f1f1f1;
-    border: 1px solid #d3d3d3;
-    text-align: center;
+
+
+  li{
+    width: 200px;
+    height: 50px;
+    border: 1px solid#2196F3;
+    margin: 1%;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px 1px #d3d3d3;
   }
-  
-  .mydivheader {
-    padding: 10px;
-    cursor: move;
-    z-index: 10;
-    background-color: #2196F3;
-    color: #fff;
+
+  .over{
+    border: 3px solid#2196F3;
   }

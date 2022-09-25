@@ -1,36 +1,32 @@
 import { useState } from 'react';
 import { uuid } from 'uuid/v4';
-import './App.css'
+import './style/common.css'
 import { useEffect } from 'react';
 const Drag = ()  => {
     const [list,setList] = useState([
         {
-            emoji: Math.random() * 100,
+            emoji: <span>👦</span>,
             name: '이상연'
         },
         {
-            emoji: Math.random() * 100,
-            name: '김이언'
+            emoji: <span>😇</span>,
+            name: '최인묵'
         },
         {
-            emoji: Math.random() * 100,
-            name: '유병학'
+            emoji: <span>😎</span>,
+            name: '권혁민'
         },
         {
-            emoji: Math.random() * 100,
-            name: '꼼짱모'
+            emoji: <span>👻</span>,
+            name: '정용우'
         },
         {
-            emoji: Math.random() * 100,
-            name: '코우자'
+            emoji: <span>😺</span>,
+            name: '고앙다'
         },
         {
-            emoji: Math.random() * 100,
-            name: '멀방맨'
-        },
-        {
-            emoji: Math.random() * 100,
-            name: '코린'
+            emoji: <span>👤</span>,
+            name: '송은석'
         },
     ])
     const [dragAndDrop, setDragAndDrop] = useState({
@@ -118,64 +114,62 @@ const Drag = ()  => {
       item.classList.remove("over");
     });
   };
+  const addEmployee = () => {
+      const item = {
+          emoji: <span>👤</span>,
+          name: '새 직원 '+ list.length
+      }
+      setList([...list, item])
+
+
+  }
 //   useEffect(()=>{
 //     setList(dragAndDrop.updatedOrder)
 //   },[dragAndDrop.updatedOrder])
     return (
-        <div style={{display:'flex',}}>
-            <ul>
-                {list.map((item, index) => {
-                    return (
-                    <li
-                        style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        }}
-                        className="draggable"
-                        key={index}			
-                        draggable={true} 				//  draggable => true이면 드래그가 가능합니다.
-                        data-position={index}			//  dataset에 index값을 주어 선택된 index를 찾을 수 있습니다.
-                        onDragStart={onDragStart}		//  ex) event.currentTarget.dataset.position
-                        onDragOver={onDragOver}
-                        onDragLeave={onDragLeave}
-                        onDrop={onDrop}
-                        onDragEnter={onDragEnter}
-                        onDragEnd={onDragEnd}
-                    >
-                        <span>{item.emoji}</span>
-                        <p>{item.name}</p>
-                    </li>
-                    );
-                })}
-            </ul>
-            <ul>
-                {list.map((item, index) => {
-                    return (
-                    <li
-                        style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        }}
-                        className="draggable"
-                        key={index}			
-                        draggable={true} 				//  draggable => true이면 드래그가 가능합니다.
-                        data-position={index}			//  dataset에 index값을 주어 선택된 index를 찾을 수 있습니다.
-                        onDragStart={onDragStart}		//  ex) event.currentTarget.dataset.position
-                        onDragOver={onDragOver}
-                        onDragLeave={onDragLeave}
-                        onDrop={onDrop}
-                        onDragEnter={onDragEnter}
-                        onDragEnd={onDragEnd}
-                    >
-                        <span>{item.emoji}</span>
-                        <p>{item.name}</p>
-                    </li>
-                    );
-                })}
-            </ul>
-        </div>
+        <>
+            <div>
+              <h3>  Drag And Drop Study 1 week</h3>
+              
+            </div>
+            <div style={{
+                display:'flex',
+                justifyContent:'center', 
+                alignItems:'center', 
+                height:700,
+                flexDirection:'column'
+            }}>
+                <button
+                    onClick={() => addEmployee()}
+                >새 직원 +</button>
+                <ul>
+                    {list.map((item, index) => {
+                        return (
+                        <li
+                            style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            }}
+                            className="draggable"
+                            key={index}			
+                            draggable={true} 				//  draggable => true이면 드래그가 가능합니다.
+                            data-position={index}			//  dataset에 index값을 주어 선택된 index를 찾을 수 있습니다.
+                            onDragStart={onDragStart}		//  ex) event.currentTarget.dataset.position
+                            onDragOver={onDragOver}
+                            onDragLeave={onDragLeave}
+                            onDrop={onDrop}
+                            onDragEnter={onDragEnter}
+                            onDragEnd={onDragEnd}
+                        >
+                            <span>{item.emoji}</span>
+                            <p>{item.name}</p>
+                        </li>
+                        );
+                    })}
+                </ul>
+            </div>
+        </>
     )
 }
 
