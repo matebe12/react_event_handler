@@ -51,18 +51,18 @@ const Drag = ()  => {
     // 드래그 하면서 아이템이 겹칠때
     const onDragOver = (event) => {
         console.log('아이템 들고있을때')
-        event.preventDefault();
+        event.preventDefault(); //엘리먼트는 서로 위치가 변할수 없기 때문에 이벤트 동작하기전에 멈춰준다
         let newList = dragAndDrop.originalOrder;
         const draggedFrom = dragAndDrop.draggedFrom; // 드래그 되는 엘리먼트 인덱스
-        const draggedTo  = parseInt(event.currentTarget.dataset.position); //놓을 수 있는 영역의 인덱스(끝)
-        const itemDragged = newList[draggedFrom]// 드래그 겹치는 엘리먼트
+        const draggedTo  = parseInt(event.currentTarget.dataset.position); //놓을 수 있는 영역의 인덱스(끝), 겹쳐있는 인덱스
+        const itemDragged = newList[draggedFrom]// 드래그 되는 엘리먼트
         const remainingItems = newList.filter((item,index) => index !== draggedFrom) // 드래그하고있는 엘리먼트 빼고 배열목록
         newList = [										// 드래그 시작, 끝 인덱스를 활용해 새로운 배열로 반환해줌
-            ...remainingItems.slice(0, draggedTo),
-            itemDragged,
-            ...remainingItems.slice(draggedTo),
+            ...remainingItems.slice(0, draggedTo), //0부터 드래그 
+            itemDragged,                           //드래그 되는 엘리먼트
+            ...remainingItems.slice(draggedTo),     //겹치는 엘리먼트 이후의 배열 반환
         ];
-        if(draggedTo !== dragAndDrop.draggedTo){
+        if(draggedTo !== dragAndDrop.draggedTo){ //인덱스 포지션이 다른 경우에만 set 해준다
             setDragAndDrop ({
                 ...dragAndDrop,
                 updatedOrder:newList,
@@ -72,7 +72,7 @@ const Drag = ()  => {
     }
     //드래그한 엘리먼트를 놓을때
     const onDrop = (event) => {
-        console.log('드래그 영역 안에 아이템을 놓음');
+        console.log('드래그 영역 안에 아이템을 드랍');
         setList(dragAndDrop.updatedOrder); //리스트를 재구성
         setDragAndDrop({//상태 초기화
           ...dragAndDrop,
