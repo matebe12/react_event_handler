@@ -73,7 +73,6 @@ const Drag = ()  => {
     //드래그한 엘리먼트를 놓을때
     const onDrop = (event) => {
         console.log('드래그 영역 안에 아이템을 드랍');
-        setList(dragAndDrop.updatedOrder); //리스트를 재구성
         setDragAndDrop({//상태 초기화
           ...dragAndDrop,
           draggedFrom: null,
@@ -84,31 +83,17 @@ const Drag = ()  => {
     const onDragLeave = (event) => {
         console.log('드래그 영역을 벗어남');
         event.currentTarget.classList.remove("over");
-        setDragAndDrop({
-          ...dragAndDrop,
-          draggedTo: null,
-        });
     };
-    // 잡은 Item이 다른 Item이랑 겹쳤을 때 발생<겹쳐졌을 때>
+    // element를 들고 있을때 다른 element의 영역에 들어 온 상태
   const onDragEnter = (event) => { 
-    console.log('아이템이 다른것과 겹침');
+    console.log('element를 들고 있을때 다른 element의 영역에 들어 온 상태');
     event.currentTarget.classList.add("over");
   };
   // 잡은 Item을 놓았을 때 발생
   const onDragEnd = (event) => {
     console.log('아무영역에 드래그를 놓음');
     event.currentTarget.style.opacity = "1";
-    let newList = dragAndDrop.originalOrder;
-    const draggedFrom = dragAndDrop.draggedFrom; // 드래그 되는 엘리먼트 인덱스
-    const remainingItems = newList.filter((item,index) => index !== draggedFrom) // 드래그하고있는 엘리먼트 빼고 배열목록
-    console.log(remainingItems);
     const listItens = document.querySelectorAll(".draggable");
-    setDragAndDrop(pre =>({
-        ...pre,
-        updatedOrder:remainingItems
-    }
-    ))
-    console.log(dragAndDrop.updatedOrder)
     setList(dragAndDrop.updatedOrder); //리스트를 재구성
     listItens.forEach((item) => {
       item.classList.remove("over");
@@ -123,9 +108,9 @@ const Drag = ()  => {
 
 
   }
-//   useEffect(()=>{
-//     setList(dragAndDrop.updatedOrder)
-//   },[dragAndDrop.updatedOrder])
+  useEffect(()=>{
+    console.log(dragAndDrop.originalOrder)
+  },[dragAndDrop.originalOrder])
     return (
         <>
             <div>
