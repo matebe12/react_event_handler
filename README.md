@@ -1,64 +1,133 @@
 # Event Handler Drag and Drop(dnd) 1week
 
-## 1. event handler란?
+# 실습
 
-> 이벤트란 브라우저에서 사용자의 조작이나 환경의 변화로 벌어진 사건을 말하며 이러한 이벤트에 대해 즉각적인 반응을 할 수 있게 하는 것을 핸들러라 부릅니다.
+1. clone repository
+```
+npx create-react-app '폴더이름'
+```
 
->> 브라우저에서 발생하는 이벤트를 요약하면 다음과 같습니다.
+2. npm install
 
-## 2. event handler 종류
+```
+npm i
+```
 
-| 이벤트 종류|설명 |
-|----|---|
-| *Window event* | 브라우저에 변화가 생겼을 때 | 
-| *Mouse event* | 사용자가 마우스로 조작했을 때 | 
-| *Keyboard event* | 사용자가 키보드를 조작했을 때 | 
-| *Form event* | 폼 요소 조작에 의해 발생하는 이벤트 | 
-| *Cliboard event* | 사용자가 복사, 자르기, 붙여넣기 할 때 | 
+3. element의 event handler 확인
 
-### drag는 mouse event를 상속받는다.
-![drag event](https://user-images.githubusercontent.com/42566975/192132079-f8ea59ca-7932-436e-a2f6-3c72328000d7.png)
+onDragStart
 
-#### event handler 종류
+onDragOver
 
-| 이벤트|설명 |
-|----|---|
-| *dragstart* | 사용자가 객체(object)를 드래그하려고 시작할 때 발생함. | 
-| *dragenter* | 마우스가 대상 객체의 위로 처음 진입할 때 발생함. | 
-| *dragover* | 드래그하면서 마우스가 대상 객체의 위에 자리 잡고 있을 때 발생함. | 
-| *drag* | 대상 객체를 드래그하면서 마우스를 움직일 때 발생함. | 
-| *drop* | 드래그가 끝나서 드래그하던 객체를 놓는 장소에 위치한 객체에서 발생함. | 
-| *dragleave* | 드래그가 끝나서 마우스가 대상 객체의 위에서 벗어날 때 발생함. | 
-| *dragend* | 대상 객체를 드래그하다가 마우스 버튼을 놓는 순간 발생함. | 
+onDragLeave
+
+onDrop
+
+onDragEnter
+
+onDragEnd
+
+4. element의 data-position을 활용해 로직 구성하기
+
+5. 이벤트 헨들러 순서
+  - onDragStart - element를 마우스로 드래그를 시작하는 단계
+  - onDragOver - element를 들고있을 때 다른 element와 겹쳐진 상태-지속
+  - onDragEnter - element를 들고 있을때 다른 element의 영역에 들어 온 상태-한번
+  - onDragEnd -  element를 아무 영역에 놓았을때(마우스를 놓았을때)
+  - onDrop - element를 drag 가능한 영역에 놓았을때
+
+## 실습 코드
+드래그를 시작하면 element의 투명도를 0.4로 바꿔준다.
+현재 드래그하고 있는 element의 포지션값을 draggedFrom에 담아준다.(현재 위치를 알기 위함)
+dragAndDrop을 set 해준다. 이 때 오리지날 리스트를 list로 해준다.(현재의 리스트)
+```javascript
+ const onDragStart = (event) => {
+        console.log('드래그 시작')
+        event.currentTarget.style.opacity = '0.4';
+        const initialPosition = parseInt(event.currentTarget.dataset.position)//배열 인덱스
+        setDragAndDrop({
+            ...dragAndDrop,
+            draggedFrom: initialPosition,
+            originalOrder:list
+        }
+    )
+ }
+```
+
+onDragEnter함수에 드래그를 시작하고 겹치는 엘리먼트에 class를 추가해주어 영역을 표시해준다.
+onDragOver event.preventDefault(); //엘리먼트는 서로 위치가 변할수 없기 때문에 이벤트 동작하기전에 멈춰준다
+original list에서 0부터 draggTo, dragFrom, 그리고 dragTo 이후의 나머지 엘리먼트를 추가해준다.
+```javascript
+  const onDragEnter = (event) => { 
+    console.log('element를 들고 있을때 다른 element의 영역에 들어 온 상태');
+    event.currentTarget.classList.add("over");
+  };
+  
+ const onDragOver = (event) => {
+        console.log('아이템 들고있을때')
+        event.preventDefault(); //엘리먼트는 서로 위치가 변할수 없기 때문에 이벤트 동작하기전에 멈춰준다
+        let newList = dragAndDrop.originalOrder;
+        const draggedFrom = dragAndDrop.draggedFrom; // 드래그 되는 엘리먼트 인덱스
+        const draggedTo  = parseInt(event.currentTarget.dataset.position); //놓을 수 있는 영역의 인덱스(끝), 겹쳐있는 인덱스
+        const itemDragged = newList[draggedFrom]// 드래그 되는 엘리먼트
+        const remainingItems = newList.filter((item,index) => index !== draggedFrom) // 드래그하고있는 엘리먼트 빼고 배열목록
+        newList = [										// 드래그 시작, 끝 인덱스를 활용해 새로운 배열로 반환해줌
+            ...remainingItems.slice(0, draggedTo), //0부터 드래그 
+            itemDragged,                           //드래그 되는 엘리먼트
+            ...remainingItems.slice(draggedTo),     //겹치는 엘리먼트 이후의 배열 반환
+        ];
+        if(draggedTo !== dragAndDrop.draggedTo){ //인덱스 포지션이 다른 경우에만 set 해준다
+            setDragAndDrop ({
+                ...dragAndDrop,
+                updatedOrder:newList,
+                draggedTo: draggedTo
+            })
+        }
+    }
+```
+
+onDragEnd  드래그를 놓았을때 투명도를 다시 1로 set해준다.
+list를 update된 list로 바꿔주고 over class를 전부 지워준다.
+
+```javascript 
+
+  const onDragEnd = (event) => {
+    console.log('아무영역에 드래그를 놓음');
+    event.currentTarget.style.opacity = "1";
+    const listItens = document.querySelectorAll(".draggable");
+    setList(dragAndDrop.updatedOrder); //리스트를 재구성
+    listItens.forEach((item) => {
+      item.classList.remove("over");
+    });
+  };
+```
+
+onDrop  영역에 드랍이 되고 나면 dragAndDrop를  from,to를 초기화 시켜준다.(리스트 제외)
 
 
-<hr/>
+```javascript 
 
-# DataTransfer 객체
+ const onDrop = (event) => {
+        console.log('드래그 영역 안에 아이템을 드랍');
+        setDragAndDrop({//상태 초기화
+          ...dragAndDrop,
+          draggedFrom: null,
+          draggedTo: null,
+        });
+  };
+```
 
->드래그 앤 드롭 이벤트를 위한 모든 이벤트 리스너 메소드(event listener method)는 DataTransfer 객체를 반환합니다.
+onDragLeave  드래그 범위가 벗어나면 over class를 지워준다.
 
->이렇게 반환된 DataTransfer 객체는 드래그 앤 드롭 동작에 관한 정보를 가지고 있게 됩니다.
 
-# draggable 속성
+```javascript 
 
->웹 페이지 내의 모든 요소는 draggable 속성을 사용하여 드래그될 수 있는 객체(draggable object)로 변환될 수 있습니다.
-
-# ondragstart 속성
-
->드래그될 수 있는 객체로 만든 후에는 ondragstart 속성을 통해 DataTransfer 객체의 setData() 메소드를 호출합니다.
-
->setData() 메소드는 드래그되는 대상 객체의 데이터(data)와 타입(data type)을 설정합니다.
-
-# ondragover 속성
-
->ondragover 속성은 드래그되는 대상 객체가 어느 요소 위에 놓일 수 있는지를 설정합니다.
-
->기본적으로 HTML 요소는 다른 요소의 위에 위치할 수 없습니다.
-
->따라서 다른 요소 위에 위치할 수 있도록 만들기 위해서는 놓일 장소에 있는 요소의 기본 동작을 막아야만 합니다.
-
->이 작업을 event.preventDefault() 메소드를 호출하는 것만으로 간단히 설정할 수 있습니다.
-
-<a href="http://www.tcpschool.com/html/html5_api_dragAndDrop" >출처 TCP school </a>
-<a href="https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/dataTransfer" >출처 mdn web docs </a>
+ const onDrop = (event) => {
+        console.log('드래그 영역 안에 아이템을 드랍');
+        setDragAndDrop({//상태 초기화
+          ...dragAndDrop,
+          draggedFrom: null,
+          draggedTo: null,
+        });
+  };
+```
