@@ -4,7 +4,7 @@
 
 1. clone repository
 ```
-npx create-react-app '폴더이름'
+git clone -b 1week-practice --single-branch https://github.com/matebe12/react_event_handler.git
 ```
 
 2. npm install
