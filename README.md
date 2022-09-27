@@ -14,7 +14,7 @@ npm i
 ```
 
 3. element의 event handler 확인
-
+```javascript
 onDragStart
 
 onDragOver
@@ -26,7 +26,7 @@ onDrop
 onDragEnter
 
 onDragEnd
-
+```
 4. element의 data-position을 활용해 로직 구성하기
 
 5. 이벤트 헨들러 순서
